@@ -266,4 +266,13 @@ This project is available for educational and portfolio purposes.
 
 ⭐ **If you found this project helpful, consider giving it a star!**
 
+Copyright (c) 2026 Muhammad Uzair Ali
+
+All Rights Reserved.
+
+No permission is granted to use, copy, modify, distribute, sublicense, sell, or create derivative works from this software or any portion of it without prior written permission from the copyright holder.
+
+This repository is provided for viewing purposes only.
+
+
 </div>
