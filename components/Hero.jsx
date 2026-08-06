@@ -1,459 +1,164 @@
 "use client";
-import { useEffect, useRef } from "react";
+
+import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 
 export default function Hero() {
   const heroRef = useRef(null);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    service: "",
+    projectDetails: "",
+  });
 
   useEffect(() => {
-    // Staggered entrance animations
-    const elements = heroRef.current?.querySelectorAll(".hero-animate");
-    elements?.forEach((el, i) => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(28px)";
-      setTimeout(() => {
-        el.style.transition = "opacity 0.7s ease, transform 0.7s ease";
-        el.style.opacity = "1";
-        el.style.transform = "translateY(0)";
-      }, 100 + i * 120);
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const animatedElements = heroRef.current?.querySelectorAll(".sr, .sr-l, .sr-r");
+    animatedElements?.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitted Quote Request:", formData);
+  };
 
   return (
     <section
       ref={heroRef}
-      style={{
-        minHeight: "100vh",
-        background: "var(--bg-primary)",
-        display: "flex",
-        alignItems: "center",
-        padding: "100px 40px 60px",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      className="relative min-h-screen pt-28 pb-16 lg:pt-36 lg:pb-24 bg-[#f2f9f6] overflow-hidden flex items-center"
     >
-      {/* Background subtle grid */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "radial-gradient(circle at 20% 50%, rgba(0,212,170,0.07) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(0,212,170,0.05) 0%, transparent 50%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 60,
-          alignItems: "center",
-        }}
-        className="hero-grid"
-      >
-        {/* Left: Headline & Content */}
-        <div>
-          <h1
-            className="hero-animate"
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 800,
-              fontSize: "clamp(2.4rem, 5vw, 4.2rem)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.03em",
-              color: "var(--text-dark)",
-              marginBottom: 28,
-            }}
-          >
-            Build{" "}
-            <span
-              style={{
-                background: "var(--teal)",
-                padding: "2px 10px 4px",
-                borderRadius: 6,
-                color: "var(--text-dark)",
-              }}
-            >
-              Digital Systems
-            </span>{" "}
-            That
-            <br />
-            Power{" "}
-            <span style={{ color: "#aaa" }}>Business Growth</span>
-          </h1>
-
-          <p
-            className="hero-animate"
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "clamp(1.1rem, 2vw, 1.35rem)",
-              color: "var(--text-dark)",
-              lineHeight: 1.4,
-              marginBottom: 16,
-            }}
-          >
-            Technology should move your business forward — not slow it down.
-          </p>
-
-          <p
-            className="hero-animate"
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "1rem",
-              color: "var(--text-medium)",
-              lineHeight: 1.7,
-              marginBottom: 40,
-              maxWidth: 480,
-            }}
-          >
-            At TekCorp, we design and develop digital platforms that help businesses automate operations, strengthen their online presence, and scale confidently.
-          </p>
-
-          {/* Trust badges row */}
-          <div
-            className="hero-animate"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.85rem",
-                color: "var(--text-medium)",
-                fontWeight: 500,
-              }}
-            >
-              More than{" "}
-              <strong style={{ color: "var(--teal)", fontWeight: 700 }}>100+</strong>{" "}
-              Companies partner
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 24,
-                flexWrap: "wrap",
-              }}
-            >
-              {/* Google Rating */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "0.75rem",
-                    color: "#4285F4",
-                    fontWeight: 700,
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  <span style={{ color: "#4285F4" }}>G</span>
-                  <span style={{ color: "#EA4335" }}>o</span>
-                  <span style={{ color: "#FBBC05" }}>o</span>
-                  <span style={{ color: "#4285F4" }}>g</span>
-                  <span style={{ color: "#34A853" }}>l</span>
-                  <span style={{ color: "#EA4335" }}>e</span>
-                  {" "}Rating
-                </span>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <strong style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1rem" }}>5.0</strong>
-                  <span style={{ color: "#f59e0b", fontSize: "0.85rem" }}>★★★★★</span>
-                </div>
-              </div>
-
-              {/* Clutch */}
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 800,
-                  fontSize: "1.4rem",
-                  color: "#e31b23",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                Clutch
-              </div>
-
-              {/* Award badge placeholder */}
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #1a3a5c, #2563eb)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.2rem",
-                }}
-              >
-                🏆
-              </div>
-
-              {/* Meta Verified */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span style={{ fontSize: "0.7rem", color: "#555" }}>meta</span>
-                <span
-                  style={{
-                    background: "#1877f2",
-                    color: "white",
-                    fontSize: "0.65rem",
-                    fontWeight: 700,
-                    padding: "2px 8px",
-                    borderRadius: 4,
-                  }}
-                >
-                  ✓ Verified
-                </span>
-              </div>
-
-              {/* GDPR */}
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  border: "2px solid #1a3a5c",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.55rem",
-                  fontWeight: 700,
-                  color: "#1a3a5c",
-                  textAlign: "center",
-                  lineHeight: 1.2,
-                }}
-              >
-                GDPR
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Contact Form Card */}
-        <div
-          className="hero-animate"
-          style={{
-            background: "white",
-            borderRadius: 24,
-            padding: "40px 36px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.08)",
-            border: "1px solid var(--border-light)",
-          }}
-        >
-          <h3
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "1.2rem",
-              color: "var(--text-dark)",
-              marginBottom: 28,
-              lineHeight: 1.3,
-            }}
-          >
-            Helping businesses build smarter digital ecosystems.
-          </h3>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Row 1 */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <input
-                type="text"
-                placeholder="Full Name"
-                style={{
-                  background: "#f0f4f2",
-                  border: "1.5px solid transparent",
-                  borderRadius: 12,
-                  padding: "14px 18px",
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.9rem",
-                  color: "var(--text-dark)",
-                  outline: "none",
-                  transition: "all 0.2s ease",
-                  width: "100%",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--teal)";
-                  e.target.style.background = "white";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(0,212,170,0.12)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "transparent";
-                  e.target.style.background = "#f0f4f2";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-              <input
-                type="tel"
-                placeholder="+01 3254 547 780"
-                style={{
-                  background: "#f0f4f2",
-                  border: "1.5px solid transparent",
-                  borderRadius: 12,
-                  padding: "14px 18px",
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.9rem",
-                  color: "var(--text-dark)",
-                  outline: "none",
-                  transition: "all 0.2s ease",
-                  width: "100%",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--teal)";
-                  e.target.style.background = "white";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(0,212,170,0.12)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "transparent";
-                  e.target.style.background = "#f0f4f2";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Row 2 */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <input
-                type="email"
-                placeholder="Email Address"
-                style={{
-                  background: "#f0f4f2",
-                  border: "1.5px solid transparent",
-                  borderRadius: 12,
-                  padding: "14px 18px",
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.9rem",
-                  color: "var(--text-dark)",
-                  outline: "none",
-                  transition: "all 0.2s ease",
-                  width: "100%",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--teal)";
-                  e.target.style.background = "white";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(0,212,170,0.12)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "transparent";
-                  e.target.style.background = "#f0f4f2";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-              <input
-                type="text"
-                placeholder="Services"
-                style={{
-                  background: "#f0f4f2",
-                  border: "1.5px solid transparent",
-                  borderRadius: 12,
-                  padding: "14px 18px",
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.9rem",
-                  color: "var(--text-dark)",
-                  outline: "none",
-                  transition: "all 0.2s ease",
-                  width: "100%",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--teal)";
-                  e.target.style.background = "white";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(0,212,170,0.12)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "transparent";
-                  e.target.style.background = "#f0f4f2";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Textarea */}
-            <textarea
-              placeholder="Project Details"
-              rows={4}
-              style={{
-                background: "#f0f4f2",
-                border: "1.5px solid transparent",
-                borderRadius: 12,
-                padding: "14px 18px",
-                fontFamily: "var(--font-body)",
-                fontSize: "0.9rem",
-                color: "var(--text-dark)",
-                outline: "none",
-                transition: "all 0.2s ease",
-                resize: "none",
-                width: "100%",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "var(--teal)";
-                e.target.style.background = "white";
-                e.target.style.boxShadow = "0 0 0 3px rgba(0,212,170,0.12)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "transparent";
-                e.target.style.background = "#f0f4f2";
-                e.target.style.boxShadow = "none";
-              }}
-            />
-
-            {/* Submit Button */}
-            <button
-              style={{
-                width: "100%",
-                background: "var(--teal)",
-                color: "var(--text-dark)",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "1rem",
-                padding: "18px 24px",
-                borderRadius: 14,
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                letterSpacing: "-0.01em",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--teal-dark)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,212,170,0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--teal)";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              Get Custom Development Quote
-            </button>
-          </div>
-        </div>
+      <div className="absolute inset-0 pointer-events-none select-none">
+        <div className="absolute -top-24 -left-24 w-[500px] h-[500px] bg-[#00d4aa]/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -right-24 w-[600px] h-[600px] bg-[#00d4aa]/05 rounded-full blur-3xl" />
       </div>
 
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
+      {/* ✅ FIXED: removed max-w cap, now full-width with padding */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+          <div className="lg:col-span-7 space-y-8">
+            <div className="sr d1">
+              <h1 className="font-sora font-extrabold text-4xl sm:text-5xl lg:text-[4.2rem] text-slate-900 leading-[1.08] tracking-tight">
+                Build{" "}
+                <span className="bg-[#00d4aa] text-slate-900 px-3 py-1 rounded-xl inline-block my-1 shadow-sm">
+                  Digital Systems
+                </span>{" "}
+                That <br className="hidden sm:inline" />
+                Power <span className="text-slate-900">Business Growth</span>
+              </h1>
+            </div>
+
+            <div className="sr d2 space-y-4 max-w-2xl">
+              <p className="font-sora font-bold text-lg sm:text-xl text-slate-800 leading-snug">
+                Technology should move your business forward — not slow it down.
+              </p>
+              <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+                At TekCorp, we design and develop digital platforms that help
+                businesses automate operations, strengthen their online presence,
+                and scale confidently.
+              </p>
+            </div>
+
+            <div className="sr d3 pt-2">
+              <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-[#e4ece8] shadow-sm">
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 mb-5">
+                  More than <span className="text-[#00d4aa] font-bold">100+</span> Companies partner
+                </p>
+                <div className="flex flex-wrap items-center justify-between gap-8 lg:gap-10">
+
+  <div className="relative w-[170px] h-[70px] shrink-0 transition-transform duration-300 hover:scale-105">
+    <Image
+      src="/assets/goo.png"
+      alt="Google 5.0 Rating Badge"
+      fill
+      className="object-contain object-center"
+    />
+  </div>
+
+  <div className="relative w-[170px] h-[70px] shrink-0 transition-transform duration-300 hover:scale-105">
+    <Image
+      src="/assets/clutchnew.png"
+      alt="Clutch Leader Badge"
+      fill
+      className="object-contain object-center"
+    />
+  </div>
+
+  <div className="relative w-[170px] h-[70px] shrink-0 transition-transform duration-300 hover:scale-105">
+    <Image
+      src="/assets/tsdc.png"
+      alt="Top Software Development Company Badge"
+      fill
+      className="object-contain object-center"
+    />
+  </div>
+
+  <div className="relative w-[170px] h-[70px] shrink-0 transition-transform duration-300 hover:scale-105">
+    <Image
+      src="/assets/metahero.png"
+      alt="Meta Verified Partner Badge"
+      fill
+      className="object-contain object-center"
+    />
+  </div>
+
+  <div className="relative w-[170px] h-[70px] shrink-0 transition-transform duration-300 hover:scale-105">
+    <Image
+      src="/assets/gdpr.png"
+      alt="GDPR Compliant Badge"
+      fill
+      className="object-contain object-center"
+    />
+  </div>
+
+</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 sr-r d2">
+            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-[#e4ece8] transition-all duration-300 hover:shadow-3xl">
+              <h3 className="font-sora font-bold text-xl sm:text-2xl text-slate-900 mb-6 leading-snug">
+                Helping businesses build smarter digital ecosystems.
+              </h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required className="w-full bg-[#f2f9f6] border border-transparent focus:border-[#00d4aa] focus:bg-white focus:ring-2 focus:ring-[#00d4aa]/20 rounded-xl px-4 py-3.5 text-sm text-slate-800 outline-none transition-all duration-200" />
+                  <input type="tel" name="phone" placeholder="+01 3254 547 780" value={formData.phone} onChange={handleChange} className="w-full bg-[#f2f9f6] border border-transparent focus:border-[#00d4aa] focus:bg-white focus:ring-2 focus:ring-[#00d4aa]/20 rounded-xl px-4 py-3.5 text-sm text-slate-800 outline-none transition-all duration-200" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required className="w-full bg-[#f2f9f6] border border-transparent focus:border-[#00d4aa] focus:bg-white focus:ring-2 focus:ring-[#00d4aa]/20 rounded-xl px-4 py-3.5 text-sm text-slate-800 outline-none transition-all duration-200" />
+                  <input type="text" name="service" placeholder="Services" value={formData.service} onChange={handleChange} className="w-full bg-[#f2f9f6] border border-transparent focus:border-[#00d4aa] focus:bg-white focus:ring-2 focus:ring-[#00d4aa]/20 rounded-xl px-4 py-3.5 text-sm text-slate-800 outline-none transition-all duration-200" />
+                </div>
+                <textarea name="projectDetails" rows={4} placeholder="Project Details" value={formData.projectDetails} onChange={handleChange} className="w-full bg-[#f2f9f6] border border-transparent focus:border-[#00d4aa] focus:bg-white focus:ring-2 focus:ring-[#00d4aa]/20 rounded-xl px-4 py-3.5 text-sm text-slate-800 outline-none transition-all duration-200 resize-none" />
+                <button type="submit" className="w-full bg-[#00d4aa] hover:bg-[#00b894] text-slate-900 font-sora font-extrabold text-sm sm:text-base py-4 px-6 rounded-xl shadow-lg shadow-[#00d4aa]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0">
+                  Get Custom Development Quote
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
   );
 }

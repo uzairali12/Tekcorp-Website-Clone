@@ -1,172 +1,150 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const faqs = [
   {
     q: "What services do TekCorp provide?",
-    a: "We provide AI automation, web development, SEO services, branding solutions, and EdTech platform development.",
+    a: "We provide end-to-end digital engineering including AI automation systems, custom web platform development, high-converting SEO architectures, cohesive brand design systems, and specialized EdTech solutions.",
   },
   {
     q: "Do you develop custom solutions?",
-    a: "Yes, every solution we build is fully customized to meet the unique needs and goals of your business. We don't offer one-size-fits-all packages.",
+    a: "Yes, every system we build is custom-architected to align with your exact business processes and growth objectives. We avoid rigid templates and one-size-fits-all software.",
   },
   {
     q: "How long does a project take?",
-    a: "Project timelines vary based on scope and complexity. A typical website takes 4–8 weeks, while more complex platforms can take 2–6 months. We provide a detailed timeline during discovery.",
+    a: "Timelines depend on scope and feature complexity. A high-converting corporate website typically takes 4–8 weeks, while complex web applications or SaaS platforms require 2–6 months. We deliver a milestone-based timeline during discovery.",
   },
   {
     q: "Do you provide ongoing support?",
-    a: "Yes, we offer ongoing maintenance and support packages to ensure your digital platforms continue to perform at their best after launch.",
+    a: "Yes, we offer structured post-launch support and maintenance SLAs to continuously optimize platform performance, manage security updates, and scale system capacity as your business grows.",
   },
 ];
 
 export default function FAQ() {
   const [open, setOpen] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".faq-item").forEach((el, i) => {
-              setTimeout(() => {
-                el.style.opacity = "1";
-                el.style.transform = "translateY(0)";
-              }, i * 100);
-            });
-          }
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => { if (el) observer.unobserve(el); };
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
   }, []);
 
+  const toggleFAQ = (index) => {
+    setOpen((prev) => (prev === index ? -1 : index));
+  };
+
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        background: "var(--bg-primary)",
-        padding: "100px 40px",
-      }}
-    >
-      <div style={{ maxWidth: 780, margin: "0 auto" }}>
-        {/* Heading */}
-        <h2
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 800,
-            fontSize: "clamp(2rem, 4vw, 3rem)",
-            letterSpacing: "-0.03em",
-            color: "var(--text-dark)",
-            textAlign: "center",
-            marginBottom: 60,
-          }}
-        >
-          Frequently Asked{" "}
-          <span style={{ color: "#aaa" }}>Questions</span>
+    <section className="bg-[#f2f9f6] py-20 lg:py-28 overflow-hidden">
+      <div ref={sectionRef} className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* SECTION HEADER */}
+        <h2 className="font-sora font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-900 text-center tracking-tight leading-tight mb-12 sm:mb-16">
+          Frequently Asked <span className="text-slate-400">Questions</span>
         </h2>
 
-        {/* FAQ items */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className={`faq-item ${open === i ? "faq-active" : ""}`}
-              style={{
-                background: "white",
-                borderRadius: 16,
-                border: open === i ? "2px solid var(--teal)" : "2px solid transparent",
-                overflow: "hidden",
-                opacity: 0,
-                transform: "translateY(16px)",
-                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                boxShadow: open === i ? "0 8px 24px rgba(0,212,170,0.1)" : "none",
-              }}
-            >
-              {/* Question header */}
-              <button
-                onClick={() => setOpen(open === i ? -1 : i)}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "22px 28px",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  gap: 16,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: open === i ? 700 : 500,
-                    fontSize: "1rem",
-                    color: open === i ? "var(--text-dark)" : "var(--text-medium)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  {faq.q}
-                </span>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: open === i ? "var(--teal)" : "#f0f0f0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={open === i ? "white" : "#666"}
-                    strokeWidth="2.5"
-                    style={{
-                      transition: "transform 0.3s ease",
-                      transform: open === i ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </button>
+        {/* ACCORDION CONTAINER */}
+        <div className="space-y-3.5">
+          {faqs.map((faq, i) => {
+            const isOpen = open === i;
+            const buttonId = `faq-btn-${i}`;
+            const panelId = `faq-panel-${i}`;
 
-              {/* Answer */}
+            return (
+              /* SCROLL REVEAL WRAPPER (Decoupled from Accordion State) */
               <div
-                style={{
-                  maxHeight: open === i ? 200 : 0,
-                  overflow: "hidden",
-                  transition: "max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
+                key={i}
+                style={{ transitionDelay: isVisible ? `${i * 90}ms` : "0ms" }}
+                className={`transition-all duration-500 ease-out ${
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4 pointer-events-none"
+                }`}
               >
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.95rem",
-                    color: "var(--text-medium)",
-                    lineHeight: 1.7,
-                    padding: "0 28px 24px",
-                  }}
+                {/* ACCORDION CARD CONTAINER */}
+                <div
+                  className={`fi rounded-2xl border transition-all duration-300 overflow-hidden ${
+                    isOpen
+                      ? "bg-white border-[#00d4aa] shadow-lg shadow-[#00d4aa]/10 ring-1 ring-[#00d4aa]/30"
+                      : "bg-white/80 hover:bg-white border-transparent hover:border-slate-200 shadow-sm"
+                  }`}
                 >
-                  {faq.a}
-                </p>
+                  <button
+                    type="button"
+                    id={buttonId}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => toggleFAQ(i)}
+                    className="w-full flex justify-between items-center px-6 py-5 sm:px-8 sm:py-6 text-left gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00d4aa] rounded-2xl transition-colors duration-200"
+                  >
+                    <span
+                      className={`font-sora text-base sm:text-lg leading-snug transition-colors duration-200 ${
+                        isOpen ? "font-bold text-slate-900" : "font-semibold text-slate-700"
+                      }`}
+                    >
+                      {faq.q}
+                    </span>
+
+                    <div
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        isOpen
+                          ? "bg-[#00d4aa] text-slate-900 shadow-md shadow-[#00d4aa]/30"
+                          : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2.5"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+
+                  {/* ANIMATED ACCORDION CONTENT */}
+                  <div
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={buttonId}
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="text-slate-600 text-sm sm:text-base leading-relaxed px-6 pb-6 sm:px-8 sm:pb-8 pt-0">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
       </div>
     </section>
   );

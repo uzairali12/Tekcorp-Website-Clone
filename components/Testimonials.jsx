@@ -1,43 +1,40 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
 
-const testimonials = [
+import { useRef, useEffect } from "react";
+
+const reviews = [
   {
     stars: 5,
-    text: "My website experienced a fatal error, causing one of the pages to become inaccessible. TekCorp LLC, under the expert guidance...",
+    text: "My website experienced a fatal error, causing one of the pages to become inaccessible. TekCorp LLC, under the expert guidance of their team, resolved the issue swiftly and restored full functionality.",
     name: "Sarah J.",
     role: "CEO",
-    initials: "SJ",
-    color: "#8b6c5c",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
   },
   {
     stars: 5,
-    text: "I recently hired TekCorp to develop a website and LMS portal for my business, and I couldn't be more satisfied with the results...",
+    text: "I recently hired TekCorp to develop a website and LMS portal for my business, and I couldn't be more satisfied with the results. Their professionalism and technical competence are second to none.",
     name: "Jasmin Row",
     role: "HR Manager, Deutschland",
-    initials: "JR",
-    color: "#5c6b7a",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=250",
   },
   {
     stars: 4,
-    text: "My website experienced a fatal error, causing one of the pages to become inaccessible. TekCorp LLC, under the expert guidance...",
+    text: "Working with TekCorp has been an absolute game-changer for our online presence. They delivered our project ahead of schedule with flawless attention to detail and exceptional support.",
     name: "Noname",
     role: "Deutschland",
-    initials: "NN",
-    color: "#7a5c6b",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250",
   },
 ];
 
-function StarRating({ count }) {
+function Stars({ n }) {
   return (
-    <div style={{ display: "flex", gap: 3 }}>
+    <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((i) => (
         <svg
           key={i}
-          width="18"
-          height="18"
+          className={`w-4 h-4 ${i <= n ? "text-amber-400" : "text-slate-300"}`}
           viewBox="0 0 24 24"
-          fill={i <= count ? "#f59e0b" : "#e5e7eb"}
+          fill="currentColor"
         >
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
@@ -47,225 +44,97 @@ function StarRating({ count }) {
 }
 
 export default function Testimonials() {
-  const [currentPage, setCurrentPage] = useState(0);
-  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".testimonial-card").forEach((card, i) => {
+            const cards = entry.target.querySelectorAll(".tc");
+            cards.forEach((card, index) => {
               setTimeout(() => {
-                card.style.opacity = "1";
-                card.style.transform = "translateY(0)";
-              }, i * 120);
+                card.classList.add("opacity-100", "translate-y-0");
+                card.classList.remove("opacity-0", "translate-y-5");
+              }, index * 110);
             });
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => { if (el) observer.unobserve(el); };
+
+    const currentRef = containerRef.current;
+    if (currentRef) observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        background: "var(--bg-white)",
-        padding: "60px 40px 100px",
-      }}
-    >
-      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+    <section className="bg-white py-16 sm:py-20 lg:py-24">
+      <div
+        ref={containerRef}
+        className="w-full max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-12"
+      >
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 48,
-            flexWrap: "wrap",
-            gap: 24,
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 800,
-              fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-              letterSpacing: "-0.03em",
-              color: "var(--text-dark)",
-            }}
-          >
+        <div className="flex flex-wrap justify-between items-start gap-5 mb-11">
+          <h2 className="font-sora font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-tight">
             What Our Clients Say
           </h2>
-
-          {/* Google badge */}
-          <div style={{ textAlign: "right" }}>
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "1.4rem",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              <span style={{ color: "#4285F4" }}>G</span>
-              <span style={{ color: "#EA4335" }}>o</span>
-              <span style={{ color: "#FBBC05" }}>o</span>
-              <span style={{ color: "#4285F4" }}>g</span>
-              <span style={{ color: "#34A853" }}>l</span>
-              <span style={{ color: "#EA4335" }}>e</span>
+          <div className="text-right">
+            <div className="font-sora font-black text-xl tracking-tight leading-none">
+              <span className="text-[#4285F4]">G</span>
+              <span className="text-[#EA4335]">o</span>
+              <span className="text-[#FBBC05]">o</span>
+              <span className="text-[#4285F4]">g</span>
+              <span className="text-[#34A853]">l</span>
+              <span className="text-[#EA4335]">e</span>
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-light)", marginBottom: 4 }}>Reviews</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <strong style={{ fontFamily: "var(--font-heading)", fontSize: "1rem" }}>5.0</strong>
-              <span style={{ color: "#f59e0b" }}>★★★★★</span>
+            <div className="text-xs text-slate-500 mt-1 mb-1">Reviews</div>
+            <div className="flex items-center gap-1.5 justify-end">
+              <strong className="font-sora text-sm text-slate-900">5.0</strong>
+              <span className="text-amber-400 text-xs">★★★★★</span>
             </div>
           </div>
         </div>
 
-        {/* Testimonial cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-          }}
-          className="testimonials-grid"
-        >
-          {testimonials.map((t, i) => (
+        {/* Testimonials Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {reviews.map((r, i) => (
             <div
               key={i}
-              className="testimonial-card"
-              style={{
-                background: "#f5f5f5",
-                borderRadius: 20,
-                padding: "32px",
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.5s ease",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                gap: 24,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = "0 12px 36px rgba(0,0,0,0.08)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
+              className="tc bg-[#f4f4f4] rounded-2xl p-7 flex flex-col justify-between gap-6 opacity-0 translate-y-5 transition-all duration-450 ease-out hover:-translate-y-1 hover:shadow-lg"
             >
               <div>
-                <StarRating count={t.stars} />
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.95rem",
-                    color: "var(--text-medium)",
-                    lineHeight: 1.7,
-                    marginTop: 16,
-                  }}
-                >
-                  {t.text}
+                <Stars n={r.stars} />
+                <p className="text-sm text-slate-600 leading-relaxed mt-3.5">
+                  {r.text}
                 </p>
               </div>
 
-              {/* Author */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+              <div className="flex items-center justify-between">
                 <div>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 700,
-                      fontSize: "0.95rem",
-                      color: "var(--text-dark)",
-                      marginBottom: 4,
-                    }}
-                  >
-                    {t.name}
+                  <p className="font-sora font-bold text-sm text-slate-900 mb-0.5">
+                    {r.name}
                   </p>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "0.8rem",
-                      color: "var(--text-light)",
-                    }}
-                  >
-                    {t.role}
-                  </p>
+                  <p className="text-xs text-slate-500">{r.role}</p>
                 </div>
 
-                {/* Avatar placeholder */}
-                {/* add image of client photo headshot dash */}
-                <div
-                  style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 12,
-                    background: t.color,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 700,
-                    fontSize: "0.85rem",
-                    color: "white",
-                    flexShrink: 0,
-                  }}
-                >
-                  {t.initials}
+                {/* Headshot Image */}
+                <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-200 relative">
+                  <img
+                    src={r.image}
+                    alt={r.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Navigation dots */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 40 }}>
-          {[0, 1].map((i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i)}
-              style={{
-                width: currentPage === i ? 32 : 8,
-                height: 8,
-                borderRadius: 4,
-                background: currentPage === i ? "var(--teal)" : "#ddd",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                padding: 0,
-              }}
-            />
-          ))}
-        </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .testimonials-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-        @media (max-width: 640px) {
-          .testimonials-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useRef } from "react";
+
+import { useRef, useEffect } from "react";
 
 const steps = [
   {
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
@@ -14,7 +15,7 @@ const steps = [
   },
   {
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="18" cy="18" r="3" />
         <circle cx="6" cy="6" r="3" />
         <path d="M13 6h3a2 2 0 0 1 2 2v7" />
@@ -26,7 +27,7 @@ const steps = [
   },
   {
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
       </svg>
@@ -36,7 +37,7 @@ const steps = [
   },
   {
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 18l6-6-6-6" />
         <circle cx="12" cy="12" r="10" />
       </svg>
@@ -47,161 +48,74 @@ const steps = [
 ];
 
 export default function Process() {
-  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".process-card").forEach((card, i) => {
+            entry.target.querySelectorAll(".process-card").forEach((card, index) => {
               setTimeout(() => {
-                card.style.opacity = "1";
-                card.style.transform = "translateY(0)";
-              }, i * 120);
+                card.classList.add("opacity-100", "translate-y-0");
+                card.classList.remove("opacity-0", "translate-y-6");
+              }, index * 110);
             });
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => { if (el) observer.unobserve(el); };
+
+    const currentRef = containerRef.current;
+    if (currentRef) observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        background: "var(--bg-white)",
-        padding: "0 40px 100px",
-      }}
-    >
-      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-        {/* Heading */}
-        <h2
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 800,
-            fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-            letterSpacing: "-0.03em",
-            color: "var(--text-dark)",
-            textAlign: "center",
-            marginBottom: 60,
-          }}
-        >
-          How We{" "}
-          <span style={{ color: "var(--text-dark)" }}>Deliver</span>{" "}
-          <span style={{ color: "#aaa" }}>Projects</span>
+    <section className="bg-white py-16 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        {/* Section Heading */}
+        <h2 className="font-sora font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-tight text-center mb-12 sm:mb-16">
+          How We <span className="text-slate-400">Deliver Projects</span>
         </h2>
 
-        {/* Step cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 24,
-            position: "relative",
-          }}
-          className="process-grid"
-        >
-          {/* Connecting line */}
-          <div
-            style={{
-              position: "absolute",
-              top: 26,
-              left: "12.5%",
-              right: "12.5%",
-              height: 2,
-              background: "linear-gradient(90deg, var(--teal) 0%, var(--teal) 100%)",
-              zIndex: 0,
-              opacity: 0.2,
-            }}
-          />
+        {/* Process Cards Grid */}
+        <div ref={containerRef} className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Connecting Line (Visible on Desktop) */}
+          <div className="hidden lg:block absolute top-[28px] left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-[#00d4aa]/30 via-[#00d4aa] to-[#00d4aa]/30 z-0 pointer-events-none" />
 
-          {steps.map((step, i) => (
+          {steps.map((step, index) => (
             <div
-              key={i}
-              className="process-card"
-              style={{
-                background: "white",
-                border: "1.5px solid var(--border-light)",
-                borderRadius: 20,
-                padding: "32px 28px",
-                opacity: 0,
-                transform: "translateY(24px)",
-                transition: "all 0.5s ease",
-                position: "relative",
-                zIndex: 1,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-6px)";
-                e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.08)";
-                e.currentTarget.style.borderColor = "var(--teal)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.borderColor = "var(--border-light)";
-              }}
+              key={index}
+              className="process-card group relative bg-white border border-slate-200 rounded-2xl p-7 z-10 opacity-0 translate-y-6 transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#00d4aa]/10 hover:border-[#00d4aa]"
             >
-              {/* Icon */}
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: 14,
-                  background: "var(--teal)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 24,
-                }}
-              >
+              {/* Step Number Badge */}
+              <div className="absolute top-6 right-6 font-sora font-extrabold text-xs text-slate-300 group-hover:text-[#00d4aa] transition-colors duration-300">
+                0{index + 1}
+              </div>
+
+              {/* Icon Container */}
+              <div className="w-12 h-12 rounded-xl bg-[#00d4aa] text-slate-900 flex items-center justify-center mb-5 shadow-sm group-hover:scale-105 transition-transform duration-300">
                 {step.icon}
               </div>
 
-              <h3
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 800,
-                  fontSize: "1.05rem",
-                  color: "var(--text-dark)",
-                  marginBottom: 12,
-                  letterSpacing: "-0.01em",
-                }}
-              >
+              {/* Card Title */}
+              <h3 className="font-sora font-bold text-lg text-slate-900 tracking-tight mb-2 group-hover:text-[#00d4aa] transition-colors duration-300">
                 {step.title}
               </h3>
 
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.9rem",
-                  color: "var(--text-medium)",
-                  lineHeight: 1.65,
-                }}
-              >
+              {/* Card Description */}
+              <p className="text-slate-600 text-sm leading-relaxed">
                 {step.desc}
               </p>
             </div>
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .process-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
-        @media (max-width: 560px) {
-          .process-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

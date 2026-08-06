@@ -1,358 +1,402 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("Home");
 
+  const dropdownRef = useRef(null);
+
+  // Handle navbar background opacity on scroll
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <nav
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        transition: "all 0.3s ease",
-        background: scrolled
-          ? "rgba(244,250,248,0.95)"
-          : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,0.06)" : "none",
-        padding: "0 40px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: 80,
-        }}
-      >
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Teal "T" logo icon */}
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <path d="M8 8 L20 8 L20 32 L16 32 L16 12 L8 12 Z" fill="#00d4aa"/>
-              <path d="M20 8 L32 8 L32 12 L20 12 Z" fill="#00d4aa"/>
-              <path d="M28 14 L32 14 L32 32 L28 32 Z" fill="#1a1a2e" opacity="0.3"/>
-              <rect x="8" y="8" width="24" height="4" rx="1" fill="#00d4aa"/>
-              <rect x="17" y="8" width="6" height="24" rx="1" fill="#00d4aa"/>
-            </svg>
-          </div>
-          <div>
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "1.25rem",
-                color: "var(--text-dark)",
-                letterSpacing: "-0.03em",
-                lineHeight: 1,
-              }}
-            >
-              TEKCORP
-            </div>
-            <div
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.65rem",
-                color: "var(--text-light)",
-                letterSpacing: "0.05em",
-                marginTop: 2,
-              }}
-            >
-              Empowering Innovation
-            </div>
-          </div>
-        </div>
+  // Close dropdown and mobile drawer when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setSolutionsOpen(false);
+      }
+    };
 
-        {/* Center Nav Links */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "white",
-            borderRadius: 50,
-            padding: "6px 8px",
-            gap: 2,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            border: "1px solid #e8edf0",
-          }}
-          className="nav-pill-container"
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSolutionsOpen(false);
+        setMobileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const navLinks = [
+    { name: "Home", href: "#" },
+    { name: "Our Solutions", hasDropdown: true },
+    { name: "Case Studies", href: "#" },
+    { name: "Insights", href: "#" },
+    { name: "Company", href: "#" },
+  ];
+
+  const solutionsItems = [
+    {
+      title: "AI Solutions",
+      description: "Intelligent automation & generative ML systems",
+      href: "#",
+      icon: (
+        <svg
+          className="w-5 h-5 text-[var(--teal-dark)] transition-transform duration-200 group-hover:scale-110"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
         >
-          {/* Home - active */}
-          <a
-            href="#"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "8px 20px",
-              borderRadius: 50,
-              background: "var(--teal)",
-              color: "var(--text-dark)",
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "0.9rem",
-              textDecoration: "none",
-              transition: "all 0.2s ease",
-            }}
-          >
-            Home
-          </a>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "Website & Software Development",
+      description: "Custom web applications & scalable backend systems",
+      href: "#",
+      icon: (
+        <svg
+          className="w-5 h-5 text-[var(--teal-dark)] transition-transform duration-200 group-hover:scale-110"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "Search Engine Optimization",
+      description: "Organic search growth & technical domain optimization",
+      href: "#",
+      icon: (
+        <svg
+          className="w-5 h-5 text-[var(--teal-dark)] transition-transform duration-200 group-hover:scale-110"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "Branding & Design",
+      description: "UI/UX interfaces & modern brand identities",
+      href: "#",
+      icon: (
+        <svg
+          className="w-5 h-5 text-[var(--teal-dark)] transition-transform duration-200 group-hover:scale-110"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "EdTech Platform Development",
+      description: "Interactive learning portals & education software",
+      href: "#",
+      icon: (
+        <svg
+          className="w-5 h-5 text-[var(--teal-dark)] transition-transform duration-200 group-hover:scale-110"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 14l9-5-9-5-9 5 9 5z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+          />
+        </svg>
+      ),
+    },
+  ];
 
-          {/* Our Solutions with dropdown */}
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setSolutionsOpen(!solutionsOpen)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 20px",
-                borderRadius: 50,
-                background: "transparent",
-                color: "var(--text-medium)",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: "0.9rem",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#f4faf8")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-            >
-              Our Solutions
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                style={{
-                  transition: "transform 0.2s",
-                  transform: solutionsOpen ? "rotate(180deg)" : "rotate(0deg)",
-                }}
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            {solutionsOpen && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "calc(100% + 12px)",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  background: "white",
-                  borderRadius: 16,
-                  padding: "12px",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-                  border: "1px solid #e8edf0",
-                  minWidth: 220,
-                  zIndex: 100,
-                  animation: "fadeInUp 0.2s ease",
-                }}
-              >
-                {[
-                  "AI Solutions",
-                  "Website & Software Development",
-                  "Search Engine Optimization",
-                  "Branding & Design",
-                  "EdTech Platform Development",
-                ].map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    style={{
-                      display: "block",
-                      padding: "10px 16px",
-                      borderRadius: 10,
-                      color: "var(--text-medium)",
-                      fontFamily: "var(--font-body)",
-                      fontSize: "0.88rem",
-                      fontWeight: 500,
-                      textDecoration: "none",
-                      transition: "all 0.15s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "var(--teal-light)";
-                      e.currentTarget.style.color = "var(--teal-dark)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "var(--text-medium)";
-                    }}
-                  >
-                    {item}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[var(--bg)]/85 backdrop-blur-md shadow-sm py-3 border-b border-[var(--border-subtle)]"
+          : "bg-transparent py-5"
+      }`}
+    >
 
-          {["Case Studies", "Insights", "Company"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 20px",
-                borderRadius: 50,
-                background: "transparent",
-                color: "var(--text-medium)",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: "0.9rem",
-                textDecoration: "none",
-                transition: "all 0.2s ease",
-                whiteSpace: "nowrap",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#f4faf8")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-
-        {/* CTA Button */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 flex items-center justify-between">
+        
+        {/* Brand Logo */}
         <a
           href="#"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            padding: "12px 28px",
-            borderRadius: 50,
-            background: "transparent",
-            color: "var(--text-dark)",
-            fontFamily: "var(--font-heading)",
-            fontWeight: 700,
-            fontSize: "0.9rem",
-            textDecoration: "none",
-            border: "2px solid var(--text-dark)",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "var(--text-dark)";
-            e.currentTarget.style.color = "white";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.color = "var(--text-dark)";
-          }}
+          className="flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02] flex-shrink-0"
         >
-          Get Started
+          <div className="relative h-9 sm:h-11 w-36 sm:w-44">
+            <Image
+              src="/assets/blacklogo.png"
+              alt="TekCorp Logo"
+              fill
+              priority
+              className="object-contain object-left"
+            />
+          </div>
         </a>
 
-        {/* Mobile hamburger */}
+        {/* Center Pill Navigation (Desktop) */}
+        <nav className="hidden md:flex items-center bg-[var(--bg-card)] rounded-full p-1.5 shadow-[var(--shadow-sm)] border border-[var(--border-subtle)]">
+          {navLinks.map((link) => {
+            if (link.hasDropdown) {
+              return (
+                <div
+                  key={link.name}
+                  ref={dropdownRef}
+                  className="relative"
+                  onMouseEnter={() => setSolutionsOpen(true)}
+                  onMouseLeave={() => setSolutionsOpen(false)}
+                >
+                  <button
+                    onClick={() => setSolutionsOpen((prev) => !prev)}
+                    aria-expanded={solutionsOpen}
+                    aria-haspopup="true"
+                    className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                      activeTab === link.name || solutionsOpen
+                        ? "bg-[var(--teal)] text-[var(--text-dark)] shadow-sm"
+                        : "text-[var(--text-body)] hover:text-[var(--text-dark)] hover:bg-[var(--bg)]"
+                    }`}
+                  >
+                    {link.name}
+                    <svg
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        solutionsOpen ? "rotate-180" : "rotate-0"
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {solutionsOpen && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-80 sm:w-96 z-50">
+                      <div className="bg-[var(--bg-card)] rounded-2xl p-2.5 shadow-2xl border border-[var(--border-subtle)] animate-in fade-in slide-in-from-top-2 duration-200 divide-y divide-[var(--border-subtle)]/50">
+                        <div className="p-1 space-y-1">
+                          {solutionsItems.map((item) => (
+                            <a
+                              key={item.title}
+                              href={item.href}
+                              className="group flex items-start gap-3.5 p-2.5 rounded-xl transition-all duration-150 hover:bg-[var(--teal-light)]/60"
+                            >
+                              <div className="flex-shrink-0 p-2 rounded-lg bg-[var(--bg)] border border-[var(--border-subtle)] shadow-xs group-hover:border-[var(--teal)]/40 group-hover:bg-white">
+                                {item.icon}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs sm:text-sm font-bold text-[var(--text-dark)] group-hover:text-[var(--teal-dark)] transition-colors">
+                                  {item.title}
+                                </div>
+                                <p className="text-[11px] text-[var(--text-body)] opacity-80 leading-tight mt-0.5 line-clamp-2">
+                                  {item.description}
+                                </p>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setActiveTab(link.name)}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === link.name
+                    ? "bg-[var(--teal)] text-[var(--text-dark)] shadow-sm"
+                    : "text-[var(--text-body)] hover:text-[var(--text-dark)] hover:bg-[var(--bg)]"
+                }`}
+              >
+                {link.name}
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* CTA Button (Desktop) */}
+        <div className="hidden md:block flex-shrink-0">
+          <a
+            href="#contact"
+            className="btn-teal text-sm !py-2.5 !px-6 font-bold inline-block rounded-full transition-transform active:scale-95"
+          >
+            Get Started
+          </a>
+        </div>
+
+        {/* Mobile Hamburger Button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 8,
-          }}
-          className="mobile-menu-btn"
+          className="md:hidden p-2 text-[var(--text-dark)] focus:outline-none"
+          aria-label="Toggle Menu"
+          aria-expanded={mobileOpen}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             {mobileOpen ? (
-              <path d="M18 6L6 18M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             ) : (
-              <>
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             )}
           </svg>
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Menu */}
       {mobileOpen && (
-        <div
-          style={{
-            background: "white",
-            padding: "20px 24px",
-            borderTop: "1px solid var(--border-light)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            animation: "fadeInUp 0.2s ease",
-          }}
-        >
-          {["Home", "Our Solutions", "Case Studies", "Insights", "Company"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              style={{
-                padding: "12px 16px",
-                color: "var(--text-dark)",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: "1rem",
-                textDecoration: "none",
-                borderRadius: 10,
-                transition: "background 0.15s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#f4faf8")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-            >
-              {item}
-            </a>
-          ))}
+        <div className="md:hidden bg-[var(--bg-card)] border-t border-[var(--border-subtle)] px-6 py-4 space-y-3 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200 max-h-[85vh] overflow-y-auto">
           <a
             href="#"
-            style={{
-              marginTop: 12,
-              padding: "14px 24px",
-              background: "var(--teal)",
-              color: "var(--text-dark)",
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "0.95rem",
-              textDecoration: "none",
-              borderRadius: 50,
-              textAlign: "center",
+            className="block py-2 text-base font-semibold text-[var(--text-dark)] border-b border-[var(--border-subtle)]"
+            onClick={() => {
+              setActiveTab("Home");
+              setMobileOpen(false);
             }}
           >
-            Get Started
+            Home
           </a>
+          <div>
+            <span className="block py-2 text-base font-semibold text-[var(--text-dark)]">
+              Our Solutions
+            </span>
+            <div className="pl-2 space-y-2 border-l-2 border-[var(--teal)] my-2">
+              {solutionsItems.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--teal-light)]/40 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className="p-1.5 rounded-md bg-[var(--bg)] border border-[var(--border-subtle)] mt-0.5">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <span className="block text-sm font-semibold text-[var(--text-dark)]">
+                      {item.title}
+                    </span>
+                    <span className="block text-xs text-[var(--text-body)] opacity-75">
+                      {item.description}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+          <a
+            href="#"
+            className="block py-2 text-base font-semibold text-[var(--text-dark)] border-b border-[var(--border-subtle)]"
+            onClick={() => {
+              setActiveTab("Case Studies");
+              setMobileOpen(false);
+            }}
+          >
+            Case Studies
+          </a>
+          <a
+            href="#"
+            className="block py-2 text-base font-semibold text-[var(--text-dark)] border-b border-[var(--border-subtle)]"
+            onClick={() => {
+              setActiveTab("Insights");
+              setMobileOpen(false);
+            }}
+          >
+            Insights
+          </a>
+          <a
+            href="#"
+            className="block py-2 text-base font-semibold text-[var(--text-dark)]"
+            onClick={() => {
+              setActiveTab("Company");
+              setMobileOpen(false);
+            }}
+          >
+            Company
+          </a>
+          <div className="pt-2">
+            <a
+              href="#contact"
+              className="block w-full text-center py-3 bg-[var(--teal)] text-[var(--text-dark)] font-bold rounded-full shadow-md hover:bg-[var(--teal-hover)] transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              Get Started
+            </a>
+          </div>
         </div>
       )}
-
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .nav-pill-container { display: none !important; }
-          .mobile-menu-btn { display: flex !important; }
-        }
-      `}</style>
-    </nav>
+    </header>
   );
 }
